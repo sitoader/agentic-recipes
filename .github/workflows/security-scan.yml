@@ -1,0 +1,49 @@
+name: Security Scan with Copilot
+
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+  pull_request:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitHub Copilot CLI
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_CLI_TOKEN }}
+        run: curl -fsSL https://gh.io/copilot-install | bash
+
+      - name: Run security scan with Copilot
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_CLI_TOKEN }}
+        run: |
+          SCAN_SHA=${{ inputs.commit_sha || github.sha }}
+          echo "Scanning commit ${SCAN_SHA} for security vulnerabilities"
+          echo "Loading security criteria from prompt..."
+
+          PROMPT=$(cat .github/prompts/security-scan.prompt.md)
+          PROMPT="${PROMPT//\{COMMIT_SHA\}/${SCAN_SHA}}"
+          PROMPT="${PROMPT//\{REPOSITORY\}/${{ github.repository }}}"
+
+          echo "Delegating to GitHub Copilot..."
+          echo "- Copilot will use MCP to examine the commit"
+          echo "- Copilot will scan for OWASP Top 10 vulnerabilities"
+          echo "- Copilot will create an issue and assign it to itself if needed"
+          echo ""
+
+          copilot -p "$PROMPT" --enable-all-github-mcp-tools --allow-all-tools

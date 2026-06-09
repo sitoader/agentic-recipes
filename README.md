@@ -4,10 +4,12 @@ Agentic workflows with GitHub Actions & Copilot: generate-docs, generate-tests, 
 
 
 
-| Workflow | Trigger | Description |
+| Scenario | Trigger | Description |
 |----------|---------|-------------|
 | [Generate Docs](docs/workflows/generate-docs.md) | Push | Analyzes commits and creates documentation issues |
 | [Generate Tests](docs/workflows/generate-tests.md) | Push | Identifies missing unit tests and creates issues |
+| [Security Scan](docs/workflows/security-scan.md) | Push / PR | Scans commits for OWASP Top 10 vulnerabilities |
+| [Safe Install](docs/skills/safe-install.md) | Copilot Skill | Validates packages against supply chain attacks before installation |
 
 ---
 
