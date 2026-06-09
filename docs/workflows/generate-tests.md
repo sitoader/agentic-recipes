@@ -13,23 +13,23 @@ The Generate Tests workflow uses GitHub Copilot CLI to examine code changes and 
 ## How It Works
 
 ```mermaid
-flowchart TD
-    A[Push to Repository] --> B{Source files changed?}
-    B -->|No| C[Skip workflow]
-    B -->|Yes| D[Install Copilot CLI]
-    D --> E[Load analyze-tests prompt]
-    E --> F[Copilot analyzes code changes]
-    F --> G{Tests missing?}
-    G -->|No| H[Exit - Coverage adequate]
-    G -->|Yes| I[Create GitHub Issue]
-    I --> J[Assign Copilot Coding Agent]
-    J --> K[Agent writes missing tests]
-    K --> L[PR created with tests]
+graph TD
+    A["Push / PR"] --> B{"Source files changed?"}
+    B -->|No| C["Skip workflow"]
+    B -->|Yes| D["Install Copilot CLI"]
+    D --> E["Load analyze-tests prompt"]
+    E --> F["Copilot analyzes code changes"]
+    F --> G{"Tests missing?"}
+    G -->|No| H["Exit - Coverage adequate"]
+    G -->|Yes| I["Create GitHub Issue"]
+    I --> J["Assign Copilot Coding Agent"]
+    J --> K["Agent writes missing tests"]
+    K --> L["PR created with tests"]
 ```
 
 ### Step-by-Step Process
 
-1. **Triggers on every push** (excluding non-source files)
+1. **Triggers on every push and pull request** (excluding non-source files)
 2. **Installs Copilot CLI** in the GitHub Actions runner
 3. **Loads the analyze-for-tests prompt** from [`.github/prompts/analyze-for-tests.prompt.md`](../../.github/prompts/analyze-for-tests.prompt.md)
 4. **Copilot checks if new code has corresponding tests**
@@ -69,6 +69,18 @@ The workflow focuses on source code changes:
 ```yaml
 on:
   push:
+    paths:
+      - 'api/src/**/*.ts'
+      - 'frontend/src/**/*.ts'
+      - 'frontend/src/**/*.tsx'
+    paths-ignore:
+      - '**/*.test.ts'
+      - '**/*.spec.ts'
+      - '**/*.d.ts'
+  pull_request:
+    branches:
+      - main
+      - master
     paths:
       - 'api/src/**/*.ts'
       - 'frontend/src/**/*.ts'

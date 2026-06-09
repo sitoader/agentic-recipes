@@ -10,18 +10,18 @@ The Security Scan workflow leverages GitHub Copilot CLI to analyze commits for s
 ## How It Works
 
 ```mermaid
-flowchart TD
-    A[Push / PR] --> B{Excluded files only?}
-    B -->|Yes| C[Skip workflow]
-    B -->|No| D[Install Copilot CLI]
-    D --> E[Load security-scan prompt]
-    E --> F[Copilot examines commit diff]
-    F --> G{Vulnerabilities found?}
-    G -->|No| H[Exit - Commit looks clean]
-    G -->|Yes| I[Create GitHub Issue]
-    I --> J[Assign Copilot Coding Agent]
-    J --> K[Agent fixes vulnerabilities]
-    K --> L[PR created with fixes]
+graph TD
+    A["Push / PR"] --> B{"Excluded files only?"}
+    B -->|Yes| C["Skip workflow"]
+    B -->|No| D["Install Copilot CLI"]
+    D --> E["Load security-scan prompt"]
+    E --> F["Copilot examines commit diff"]
+    F --> G{"Vulnerabilities found?"}
+    G -->|No| H["Exit - Commit looks clean"]
+    G -->|Yes| I["Create GitHub Issue"]
+    I --> J["Assign Copilot Coding Agent"]
+    J --> K["Agent fixes vulnerabilities"]
+    K --> L["PR created with fixes"]
 ```
 
 ### Step-by-Step Process

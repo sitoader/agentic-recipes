@@ -10,23 +10,23 @@ The Generate Documentation workflow leverages GitHub Copilot CLI to analyze code
 ## How It Works
 
 ```mermaid
-flowchart TD
-    A[Push to Repository] --> B{Excluded files only?}
-    B -->|Yes| C[Skip workflow]
-    B -->|No| D[Install Copilot CLI]
-    D --> E[Load analyze-commit prompt]
-    E --> F[Copilot analyzes commit diff]
-    F --> G{Documentation needed?}
-    G -->|No| H[Exit - No action needed]
-    G -->|Yes| I[Create GitHub Issue]
-    I --> J[Assign Copilot Coding Agent]
-    J --> K[Agent implements documentation]
-    K --> L[PR created with docs]
+graph TD
+    A["Push / PR"] --> B{"Excluded files only?"}
+    B -->|Yes| C["Skip workflow"]
+    B -->|No| D["Install Copilot CLI"]
+    D --> E["Load analyze-commit prompt"]
+    E --> F["Copilot analyzes commit diff"]
+    F --> G{"Documentation needed?"}
+    G -->|No| H["Exit - No action needed"]
+    G -->|Yes| I["Create GitHub Issue"]
+    I --> J["Assign Copilot Coding Agent"]
+    J --> K["Agent implements documentation"]
+    K --> L["PR created with docs"]
 ```
 
 ### Step-by-Step Process
 
-1. **Triggers on every push** (excluding docs and markdown files)
+1. **Triggers on every push and pull request** (excluding docs and markdown files)
 2. **Installs Copilot CLI** in the GitHub Actions runner
 3. **Loads the analyze-for-docs prompt** from [`.github/prompts/analyze-for-docs.prompt.md`](../../.github/prompts/analyze-for-docs.prompt.md)
 4. **Copilot examines the commit diff** using MCP tools
@@ -65,6 +65,14 @@ The workflow excludes certain paths to avoid unnecessary runs:
 ```yaml
 on:
   push:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+      - master
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
